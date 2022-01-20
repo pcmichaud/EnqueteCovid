@@ -1,5 +1,5 @@
-EnqueteCovid
-------------
+Enquête Covid CIRANO
+--------------------
 
 Ce répertoire contient les données des enquêtes CIRANO-Léger 360 sur la prévalence de la COVID-19 au Québec en Janvier 2022 ainsi que les codes utilisées afin de produire les résultats qui se trouvent dans la note publiée au CIRANO, *Combien de personnes ont développé des symptômes ou contracté la COVID-19 au Québec ? Une étude exploratoire*.
 
