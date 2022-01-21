@@ -5,7 +5,7 @@ Ce répertoire contient les données des enquêtes CIRANO-Léger 360 sur la pré
 
 ## Données 
 
-Les données bruttes sont sous format Excel: 
+Les données brutes sont sous format Excel: 
 * Brut/MW14273_027A-VAGUE1.xlsx: résultats enquête Léger
 * Brut/ISQ-QC-age-sexe.xlsx: données de population ISQ
 * Brut/COVID_14jan2022_numbers.xlsx: extractions données INSPQ
