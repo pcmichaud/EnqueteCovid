@@ -8,7 +8,7 @@ Ce répertoire contient les données des enquêtes CIRANO-Léger 360 sur la pré
 ## Données 
 
 Les données brutes sont sous format Excel: 
-* Brut/MW14273_027A-VAGUE1.xlsx: résultats enquête Léger
+* Brut/MW14273_027A-VAGUE1-2.xlsx: résultats enquête Léger
 * Brut/ISQ-QC-age-sexe.xlsx: données de population ISQ
 * Brut/COVID_Xjan2022_numbers.xlsx: extractions données INSPQ
 
@@ -18,13 +18,14 @@ Le fichier de données nettoyés propre pouvant servir à des analyses est dispo
 
 Les codes (scripts) se trouvent sous Codes:
 * Codes/prepare.do: script Stata pour nettoyer les données, mettre les etiquettes, etc. Son execution produit les données sous Propre/
-* Codes/nsum-vague1.R: Script R qui fait les tableaux et figures de la note CIRANO. L'utilisateur doit ajuster les répertoires de travail et de sortie des tableaux et graphiques. 
-* Codes/histoire.R: Script R pour générer la Figure 1 de la note  sur l'évolution de la 5e vague. 
-* Codes/PCR_moyen.xlsx: Calculs du nombre de test PCR des 7 derniers jours pour nos répondants interrogés sur la période du 13 au 18 janvier. 
+* Codes/nsum-vague1-2.R: Script R qui fait les calculs pour chaque vague. L'utilisateur doit ajuster les répertoires de travail et de sortie des tableaux et graphiques. 
+* Codes/Figures_vagues.R: Script R pour faire la figure des deux vagues
+* Codes/histoire.R: Script R pour générer la Figure sur l'évolution de la 5e vague. 
+* Codes/PCR_moyen.xlsx: Calculs du nombre de test PCR des 7 derniers jours pour nos répondants interrogés sur la période de chaque enquête. 
 
 ## Questionnaire 
 
-Ce répertoire contient le questionnaire ainsi que son extraction pour l'annexe de la note. 
+Ce répertoire contient le questionnaire ainsi que son extraction pour l'annexe. 
 
 Pour toutes questions additionnelles, vous pouvez contacter [Pierre-Carl Michaud](mailto:pierre-carl.michaud@hec.ca) ou [Vincent Boucher](mailto:vincent.boucher@ecn.ulaval.ca). 
 
