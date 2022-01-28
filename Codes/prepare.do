@@ -7,7 +7,7 @@ capture log close
 
 capture cd ~/cedia/EnqueteCovid
 
-import excel using Brut/MW14273_027A-VAGUE1.xlsx, sheet(MW14273_027A-VAGUE1) firstrow
+import excel using Brut/MW14273_027A-VAGUE2.xlsx, sheet(MW14273_027A-VAGUE2) firstrow
 
 label var record "identifiant unique du répondant"
 

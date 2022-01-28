@@ -13,6 +13,7 @@ set.seed(12345) # fixer le seed pour réplications
 
 # charger les données
 df <- read.dta("Propre/cirano-leger-covid.dta")
+df <- df[df$semaine==1,]
 df$strata <- with(df, interaction(region,  age)) # ajouter la strate age*region (strate d'échantillonage)
 # définir les ARD de contrôle
 dra <- df[,c('dra_medecins','dra_rpa','dra_sansvaccin')]
@@ -41,6 +42,7 @@ sum(wgt)
 # non-vaccinés: calculé par Alexandre Prudhomme selon données INSPQ. 
 
 nks <- c(25222,127897+43861+9897,515771)
+
 nks <- c(nks,sum(nks))
 nks
 
@@ -50,6 +52,8 @@ n_dra_u <- sum(wgt*dra_u)
 
 # calculer les facteurs d'amplificateur de réseaux
 lambdas <- nks/n_dra
+lambdas
+
 
 ### fonction qui calcule l'ensemble des estimateurs
 ### pour un échantillon donné (appelée par le package "boot" pour calculer aussi les écart-types)
@@ -93,7 +97,7 @@ tableau
 tableau <- rbind(tableau,tableau/7)
 rownames(tableau) <- c('Nb cas (7j)','écart-type (7j)','Nb cas (j)','écart-type (j)')
 tableau <- t(tableau)
-print(xtable(tableau,digits=0),file='Tableaux-Figures/covid-prevalence.tex')
+print(xtable(tableau,digits=0),file='Tableaux-Figures/covid-prevalence-vague1.tex')
 tableau
 
 fig <- data.frame(
@@ -107,4 +111,6 @@ ggplot(fig) +
   geom_errorbar( aes(x=reorder(estimations, cas), ymin=cas-1.96*se, ymax=cas+1.96*se), width=0.5, colour="black", alpha=0.9, size=0.5) +
   labs(y="Nombre de cas en milliers (7 derniers jours)", x = "Estimations") +
   theme_bw()
-ggsave('Tableaux-Figures/prevalence-covid.png',dpi=1200)
+ggsave('Tableaux-Figures/prevalence-covid-vague1.png',dpi=1200)
+
+saveRDS(fig,file="Tableaux-Figures/tableauV1.Rda")
