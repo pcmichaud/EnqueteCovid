@@ -12,8 +12,9 @@ setwd("~/Dropbox/EnqueteCOVID")
 set.seed(12345) # fixer le seed pour réplications
 
 # charger les données
-df <- read.dta("Propre/cirano_leger_covid_3.dta")
-df <- df[df$semaine==3,]
+df <- read.dta("Propre/cirano_leger_covid_4.dta")
+df <- df[df$semaine==4,]
+df <- df[!is.na(df$record),]
 df$strata <- with(df, interaction(region,  age)) # ajouter la strate age*region (strate d'échantillonage)
 # définir les ARD de contrôle
 dra <- df[,c('dra_medecins','dra_rpa','dra_sansvaccin')]
@@ -38,7 +39,7 @@ sum(wgt)
 # RI-RTF: https://creei.ca/wp-content/uploads/2021/02/cahier_21_01_financement_soutien_autonomie_personnes_agees_croisee_chemins.pdf
 # non-vaccinés: calculé par Alexandre Prudhomme selon données INSPQ. 
 
-nks <- c(25240,181561,490149)
+nks <- c(25246,181561,484257)
 nks <- c(nks,sum(nks))
 nks
 
@@ -78,7 +79,7 @@ nsums_covid_se <- apply(covid$t,2,sd) # écart-type
 
 # nombres de test positifs PCR derniers 7 jours (on va faire moyenne pondérée)
 # source: https://www.inspq.qc.ca/covid-19/donnees
-tests <- 23270
+tests <- 21032
 sum(tests)
 
 # présenter le tout dans un tableau
@@ -106,6 +107,6 @@ ggplot(fig) +
   geom_errorbar( aes(x=reorder(estimations, cas), ymin=cas-1.96*se, ymax=cas+1.96*se), width=0.5, colour="black", alpha=0.9, size=0.5) +
   labs(y="Nombre de cas en milliers (7 derniers jours)", x = "Estimations") +
   theme_bw()
-ggsave('Tableaux-Figures/prevalence-covid-vague3.png',dpi=1200)
+ggsave('Tableaux-Figures/prevalence-covid-vague4.png',dpi=1200)
 
-saveRDS(fig,file="Tableaux-Figures/tableauV3.Rda")
+saveRDS(fig,file="Tableaux-Figures/tableauV4.Rda")
