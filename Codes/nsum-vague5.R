@@ -39,7 +39,8 @@ sum(wgt)
 # RI-RTF: https://creei.ca/wp-content/uploads/2021/02/cahier_21_01_financement_soutien_autonomie_personnes_agees_croisee_chemins.pdf
 # non-vaccinés: calculé par Alexandre Prudhomme selon données INSPQ. 
 
-nks <- c(25248,181561,476824)
+#nks <- c(25248,181561,476824)
+nks <- c(25248,181561,479462) # mise à jour (+précision) 9 mars
 nks <- c(nks,sum(nks))
 nks
 
@@ -93,7 +94,7 @@ tableau
 tableau <- rbind(tableau,tableau/7)
 rownames(tableau) <- c('Nb cas (7j)','écart-type (7j)','Nb cas (j)','écart-type (j)')
 tableau <- t(tableau)
-print(xtable(tableau,digits=0),file='Tableaux-Figures/covid-prevalence-vague3.tex')
+print(xtable(tableau,digits=0),file='Tableaux-Figures/covid-prevalence-vague5.tex')
 round(tableau)
 
 fig <- data.frame(

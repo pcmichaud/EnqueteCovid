@@ -1,4 +1,4 @@
-# Calculs NSUM - Semaine 1
+# Calculs NSUM - Semaine 5
 library(foreign)
 library(xtable)
 library(ggplot2)
@@ -12,15 +12,13 @@ setwd("~/Dropbox/EnqueteCOVID")
 set.seed(12345) # fixer le seed pour réplications
 
 # charger les données
-df <- read.dta("Propre/cirano-leger-covid.dta")
-df <- df[df$semaine==1,]
+df <- read.dta("Propre/cirano_leger_covid_6.dta")
+df <- df[df$semaine==6,]
+#df <- df[!is.na(df$record),]
 df$strata <- with(df, interaction(region,  age)) # ajouter la strate age*region (strate d'échantillonage)
 # définir les ARD de contrôle
 dra <- df[,c('dra_medecins','dra_rpa','dra_sansvaccin')]
 colnames(dra) <- c('medecins','rpa','sansvaccin')
-
-# QUESTION POUR VINCENT: A-T-ON ENCORE BESOIN DE CETTE LIGNE?
-#dra$medecins <- pmax(dra$medecins-1,0) ## test
 
 dra <- cbind(dra, total = rowSums(dra))
 # définir la ARD d'intérêt
@@ -41,9 +39,8 @@ sum(wgt)
 # RI-RTF: https://creei.ca/wp-content/uploads/2021/02/cahier_21_01_financement_soutien_autonomie_personnes_agees_croisee_chemins.pdf
 # non-vaccinés: calculé par Alexandre Prudhomme selon données INSPQ. 
 
-#nks <- c(25222,127897+43861+9897,515771)
-nks <- c(25222,127897+43861+9897,515455) # mise à jour (+précision) 9 mars
-
+#nks <- c(25251,181561,474572)
+nks <- c(25251,181561,477150) # mise à jour (+précision) 9 mars
 nks <- c(nks,sum(nks))
 nks
 
@@ -54,7 +51,6 @@ n_dra_u <- sum(wgt*dra_u)
 # calculer les facteurs d'amplificateur de réseaux
 lambdas <- nks/n_dra
 lambdas
-
 
 ### fonction qui calcule l'ensemble des estimateurs
 ### pour un échantillon donné (appelée par le package "boot" pour calculer aussi les écart-types)
@@ -84,7 +80,7 @@ nsums_covid_se <- apply(covid$t,2,sd) # écart-type
 
 # nombres de test positifs PCR derniers 7 jours (on va faire moyenne pondérée)
 # source: https://www.inspq.qc.ca/covid-19/donnees
-tests <- 48815 #c(12370,9702,7903,7992,6875,6398,3213)
+tests <- 11783
 sum(tests)
 
 # présenter le tout dans un tableau
@@ -98,8 +94,8 @@ tableau
 tableau <- rbind(tableau,tableau/7)
 rownames(tableau) <- c('Nb cas (7j)','écart-type (7j)','Nb cas (j)','écart-type (j)')
 tableau <- t(tableau)
-print(xtable(tableau,digits=0),file='Tableaux-Figures/covid-prevalence-vague1.tex')
-tableau
+print(xtable(tableau,digits=0),file='Tableaux-Figures/covid-prevalence-vague6.tex')
+round(tableau)
 
 fig <- data.frame(
   estimations = c(rownames(tableau),'Officiel (PCR)'),
@@ -112,6 +108,6 @@ ggplot(fig) +
   geom_errorbar( aes(x=reorder(estimations, cas), ymin=cas-1.96*se, ymax=cas+1.96*se), width=0.5, colour="black", alpha=0.9, size=0.5) +
   labs(y="Nombre de cas en milliers (7 derniers jours)", x = "Estimations") +
   theme_bw()
-ggsave('Tableaux-Figures/prevalence-covid-vague1.png',dpi=1200)
+ggsave('Tableaux-Figures/prevalence-covid-vague6.png',dpi=1200)
 
-saveRDS(fig,file="Tableaux-Figures/tableauV1.Rda")
+saveRDS(fig,file="Tableaux-Figures/tableauV6.Rda")

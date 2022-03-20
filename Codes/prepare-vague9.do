@@ -1,14 +1,13 @@
-* preparation de la base d'analyse (vague 5)
+* preparation de la base d'analyse (vague 9)
 
 clear all 
 set more off
 capture log close
 
 capture cd ~/cedia/EnqueteCovid
-* mettre ton path ici Alexandre
-capture cd path_alexandre
+capture cd C:\Users\Alexandre Prud'homme\Dropbox\EnqueteCOVID
 
-import excel "C:\Users\Alexandre Prud'homme\Dropbox\EnqueteCOVID\Brut\MW14273_028A-VAGUE5.xlsx", sheet("MW14273_028A-VAGUE5") firstrow
+import excel using "Brut\MW14273_028A-VAGUE9.xlsx", sheet("MW14273_028A-VAGUE9") firstrow
 
 label var record "identifiant unique du répondant"
 
@@ -286,12 +285,12 @@ vaccin_status* emploi_temps_plein emploi_temps_partiel emploi_salarie emploi_aut
 etudiant foyer chomeur retraite travail_lieu secteur ResultPos_miDec ResultPos_foyer_miDec ResultPos_enf0_4_miDec ResultPos_enf5_12_miDec ResultPos_enf13_17_miDec ResultPos_enfantTotal_miDec mstat revenu poids jour;
 #d cr
 
-label data "Enquête CIRANO-Léger sur la prévalence de la COVID-19, 16 février 2022"
+label data "Enquête CIRANO-Léger sur la prévalence de la COVID-19, 16 mars 2022"
 
-saveold "C:\Users\Alexandre Prud'homme\Dropbox\EnqueteCOVID\Propre\cirano_leger_covid_5.dta", replace version(11)
+saveold "C:\Users\Alexandre Prud'homme\Dropbox\EnqueteCOVID\Propre\cirano_leger_covid_9.dta", replace version(11)
 
-export delimited using "C:\Users\Alexandre Prud'homme\Dropbox\EnqueteCOVID\Propre\cirano-leger-covid_5withlabels.csv"
-export delimited using "C:\Users\Alexandre Prud'homme\Dropbox\EnqueteCOVID\Propre\cirano-leger-covid_5withcodes.csv", nolabel replace
+export delimited using "C:\Users\Alexandre Prud'homme\Dropbox\EnqueteCOVID\Propre\cirano-leger-covid_9withlabels.csv"
+export delimited using "C:\Users\Alexandre Prud'homme\Dropbox\EnqueteCOVID\Propre\cirano-leger-covid_9withcodes.csv", nolabel replace
 des 
 
 sum *
@@ -299,8 +298,3 @@ sum *
 capture log close
 
 exit
-
-
-
-
-
