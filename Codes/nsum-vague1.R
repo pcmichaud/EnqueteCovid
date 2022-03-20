@@ -41,7 +41,8 @@ sum(wgt)
 # RI-RTF: https://creei.ca/wp-content/uploads/2021/02/cahier_21_01_financement_soutien_autonomie_personnes_agees_croisee_chemins.pdf
 # non-vaccinés: calculé par Alexandre Prudhomme selon données INSPQ. 
 
-nks <- c(25222,127897+43861+9897,515771)
+#nks <- c(25222,127897+43861+9897,515771)
+nks <- c(25222,127897+43861+9897,515455) # mise à jour (+précision) 9 mars
 
 nks <- c(nks,sum(nks))
 nks
