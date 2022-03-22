@@ -12,7 +12,7 @@ Les données brutes sont sous format Excel:
 * Brut/ISQ-QC-age-sexe.xlsx: données de population ISQ
 * Brut/COVID_Xjan2022_numbers.xlsx: extractions données INSPQ
 
-Le fichier de données nettoyés propre pouvant servir à des analyses est disponible en format Stata et csv à Propre/cirano-leger-covid.*. Les données pour les deux premières vagues sont cumulatives, i.e. elles contiennent à ce jour les données des vagues 1 et 2. Les données pour les autres vagues sont présentées dans des fichiers séparés. 
+Le fichier de données nettoyés propre pouvant servir à des analyses est disponible en format Stata et csv à Propre/cirano-leger-covid.*. Les données pour les chaques vagues sont présentées dans des fichiers séparés.
 
 ## Codes
 
