@@ -287,7 +287,7 @@ etudiant foyer chomeur retraite travail_lieu secteur ResultPos_miDec ResultPos_f
 
 label data "Enquête CIRANO-Léger sur la prévalence de la COVID-19, 16 mars 2022"
 
-saveold "C:\Users\Alexandre Prud'homme\Dropbox\EnqueteCOVID\Propre\cirano_leger_covid_9.dta", replace version(11)
+saveold "C:\Users\Alexandre Prud'homme\Dropbox\EnqueteCOVID\Propre\cirano_leger_covid_1.dta", replace version(11)
 
 export delimited using "C:\Users\Alexandre Prud'homme\Dropbox\EnqueteCOVID\Propre\cirano-leger-covid_9withlabels.csv"
 export delimited using "C:\Users\Alexandre Prud'homme\Dropbox\EnqueteCOVID\Propre\cirano-leger-covid_9withcodes.csv", nolabel replace
