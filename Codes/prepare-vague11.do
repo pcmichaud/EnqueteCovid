@@ -1,4 +1,4 @@
-* preparation de la base d'analyse (vague 9)
+* Preparation de la base d'analyse (vague 11)
 
 clear all 
 set more off
@@ -7,11 +7,13 @@ capture log close
 capture cd ~/cedia/EnqueteCovid
 capture cd C:\Users\Alexandre Prud'homme\Dropbox\EnqueteCOVID
 
-import excel using "Brut\MW14273_028A-VAGUE9.xlsx", sheet("MW14273_028A-VAGUE9") firstrow
+import excel using "Brut\MW14273_028A-VAGUE11.xlsx", sheet("MW14273_028A-VAGUE11") firstrow
 
 label var record "identifiant unique du répondant"
 
-numlabel, add
+generate eventdate = dofc(date)
+format eventdate %td
+label var eventdate "journée"
 
 * region
 rename Q0QC region
@@ -38,6 +40,23 @@ label def region
 #d cr
 label values region region
 
+******************************
+tab region
+recode region (1=2) (2=2) (3=3) (4=3) (5=3) (6=1) (7=4) (8=4) (9=2) (10=2) (11=2) (12=3) (13=1) (14=4) (15=4) (16=1) (17=3), gen (region1)
+label var region1 "Régions regroupées"
+label def region1 1 "Sud du Québec (06,13,16)" 2 "Est et Nord du Québec (01,02,09,10,11)" 3 "Centre du Québec (03,04,05,12,17)" 4 "Ouest du Québec (07,08,14,15)" 
+label values region1 region1
+tab2 region region1
+order region1, after(region)
+******************************
+tab REGIO
+rename REGIO region2
+label var region2 "RMR Montréal vs RMR Québec vs autres régions"
+label def region2 1 "RMR - Montréal" 2 "RMR - Québec" 3 "Autres régions" 
+label values region2 region2
+tab region2
+order region2, after(region1)
+******************************
 * sexe
 rename sexe femme
 recode femme (2=1) (1=0) (3=0)
@@ -69,21 +88,47 @@ label def age
 label values age age
 label var age "age du répondant (groupes de 5 ans)"
 
+recode age (18/25=1) (30/35=2) (40/45=3) (50/55=4) (60/65=5) (70/75=5), gen (age_1)
+label def age_1 1 "18-29 ans" 2 "30-39 ans" 3 "40-49 ans" 4 "50-59 ans" 5 "60-69 ans" 6 "70 ans ou plus"
+label values age_1 age_1
+label var age_1 "Age (regroupé en 6 groupes)"
+
+recode age (18/25=1) (30/35=2) (40/45=3) (50/55=4) (60/75=5), gen (age_2)
+label def age_2 1 "18-29 ans" 2 "30-39 ans" 3 "40-49 ans" 4 "50-59 ans" 5 "60 ans ou plus"
+label values age_2 age_2
+label var age_2 "Age (regroupé en 5 groupes)"
+
 * semaine
 label var semaine "semaine de l'enquête"
 
 * langue
-recode LANGU (1 4 7 = 1) (2 3 5 6=0) (9=.), gen(francais_langue)
+tab QLANG
+rename QLANG LangueQuest
+label var LangueQuest "Langue du questionnaire"
+recode LangueQuest (1=0) (2=1)
+label def LangueQuest 0 "Anglais" 1 "Français"
+label values LangueQuest LangueQuest
+tab LangueQuest
+
+tab LANGU
+rename LANGU LangueMat
+label var LangueMat "Langue maternelle"
+
+recode LangueMat (1 4 7 = 1) (2 3 5 6=0) (9=.), gen(francais_langue)
 label var francais_langue "français première langue"
 label values francais_langue ouinon
 
-recode LANGU (2 5 7 = 1) (1 3 4 6=0) (9=.), gen(anglais_langue)
+recode LangueMat (2 5 7 = 1) (1 3 4 6=0) (9=.), gen(anglais_langue)
 label var anglais_langue "anglais première langue"
 label values anglais_langue ouinon
  
-recode LANGU (3 4 5 6 = 1) (1 2 7=0) (9=.), gen(autre_langue)
+recode LangueMat (3 4 5 6 = 1) (1 2 7=0) (9=.), gen(autre_langue)
 label var autre_langue "autres première langue"
 label values autre_langue ouinon
+
+tab FSA
+rename FSA CP
+label var CP "Code postal"
 
 rename FOY1 nbfam
 label var nbfam "taille du ménage"
@@ -100,8 +145,13 @@ label def educ4 1 "primaire" 2 "secondaire" 3 "collegial" 4 "universitaire"
 label values educ4 educ4
 label var educ4 "éducation (regroupé 4 groupes)"
 
+recode educ4 (1/2=1) (3=2) (4=3), gen(educ3)
+label def educ3 1 "Secondaire ou moins" 2 "collegial" 3 "universitaire"
+label values educ3 educ3
+label var educ3 "éducation (regroupé 3 groupes)"
+
 rename Q1r1 symptome_fievre
-label var symptome_fievre "symptomes de fievre"
+label var symptome_fievre "symptomes de fièvre"
 
 rename Q1r2 symptome_genera 
 label var symptome_genera "symptomes généraux"
@@ -138,6 +188,9 @@ label values covid_test_type covid_test_type
 
 rename Q3B covid_prob_7p 
 label var covid_prob_7p "probabilité symptômes COVID 7 prochains jours"
+
+recode covid_prob_7p (0 = 0 "0%") (1/49 = 1 "1-49%") (50 = 2 "50%") (50/99 = 3 "50-99%") (100= 4 "100%"), generate (covid_prob_7p_cat4)
+label var covid_prob_7p_cat4 "Probabilité perçue de développer des symptômes de COVID dans les 7 prochains jours"
 
 *********************************************************************.
 ********************
@@ -203,8 +256,8 @@ rename EMPLOr7 retraite
 label var retraite "retraité"
 
 rename Q10 travail_lieu
-label def travail 1 "presentiel" 2 "teletravail" 3 "les deux" 4 "absent"
-label values travail_lieu travail
+label def travail_lieu 1 "presentiel" 2 "teletravail" 3 "les deux" 4 "absent"
+label values travail_lieu travail_lieu
 label var travail_lieu "lieu de travail"
 
 rename Q11 secteur 
@@ -217,8 +270,6 @@ label def secteur 1 "agriculture" 2 "ressources naturelles" 3 "srvs. publics"
 #d cr
 label values secteur secteur 
 label var secteur "secteur d'activité (si travailleur)"
-
-*********************************************************************.
 
 ********************
 tab Q12
@@ -256,41 +307,38 @@ tab ResultPos_enfantTotal_miDec
 rename MARIT mstat 
 recode mstat (99=.)
 label var mstat "statut civil"
-label def mstat 1 "celibataire" 2 "marie ou conj. fait" 3 "veuf(ve)" 4 "separe" 5 "divorce"
+label def mstat 1 "celibataire" 2 "marie ou conj. fait" 3 "veuf" 4 "separe" 5 "divorce"
 label values mstat mstat
 
 rename REVEN revenu 
 recode revenu (99=.)
-label def rev 1 "<20k" 2 "20-40k" 3 "40-60k" 4 "60-80k" 5 "80-100k" 6 ">100k"
-label values revenu rev
+label def revenu 1 "<20k" 2 "20-40k" 3 "40-60k" 4 "60-80k" 5 "80-100k" 6 ">100k"
+label values revenu revenu
 label var revenu "revenu du menage 2021"
-
+********************************************************
 * poids échantillonal Léger
-rename  PONDPOP poids
+rename PONDPOP poids
 label var poids "poids échantillonal Léger"
 
-generate eventdate = dofc(date)
-format eventdate %td
-gen jour = day(eventdate)
-label var jour "journée"
+rename PONDWEIGHT poids1
+label var poids1 "poids (Léger)"
+********************************************************
 
 #d ;
-keep record date semaine region femme age *_langue nbfam nbenf_a* educ4 symptome_* nb_symptomes po_symptomes
-covid_isolement covid_status covid_test_positif covid_positif covid_test_type covid_prob_7p plateforme_autodec dra_* 
+keep record date eventdate semaine region region1 region2 LangueQuest CP LangueMat femme age age_1 age_2 *_langue nbfam nbenf_a* educ4 educ3 symptome_* nb_symptomes po_symptomes
+covid_isolement covid_status covid_test_positif covid_positif covid_test_type covid_prob_7p covid_prob_7p_cat4 plateforme_autodec dra_* 
 vaccin_status* emploi_temps_plein emploi_temps_partiel emploi_salarie emploi_autonome travailleur 
-etudiant foyer chomeur retraite travail_lieu secteur ResultPos_miDec ResultPos_foyer_miDec ResultPos_enf0_4_miDec ResultPos_enf5_12_miDec ResultPos_enf13_17_miDec ResultPos_enfantTotal_miDec mstat revenu poids jour;
-order record date semaine region femme age *_langue nbfam nbenf_a* educ4 symptome_* nb_symptomes po_symptomes
-covid_isolement covid_status covid_test_positif covid_positif covid_test_type covid_prob_7p plateforme_autodec dra_* 
+etudiant foyer chomeur retraite travail_lieu secteur ResultPos_miDec ResultPos_foyer_miDec ResultPos_enf0_4_miDec ResultPos_enf5_12_miDec ResultPos_enf13_17_miDec ResultPos_enfantTotal_miDec mstat revenu poids poids1 jour;
+order record eventdate jour semaine region region1 region2 CP LangueQuest LangueMat *_langue femme age age_1 age_2 nbfam nbenf_a* educ4 educ3 symptome_* nb_symptomes po_symptomes
+covid_isolement covid_status covid_test_positif covid_positif covid_test_type covid_prob_7p covid_prob_7p_cat4 plateforme_autodec dra_* 
 vaccin_status* emploi_temps_plein emploi_temps_partiel emploi_salarie emploi_autonome travailleur 
-etudiant foyer chomeur retraite travail_lieu secteur ResultPos_miDec ResultPos_foyer_miDec ResultPos_enf0_4_miDec ResultPos_enf5_12_miDec ResultPos_enf13_17_miDec ResultPos_enfantTotal_miDec mstat revenu poids jour;
+etudiant foyer chomeur retraite travail_lieu secteur ResultPos_miDec ResultPos_foyer_miDec ResultPos_enf0_4_miDec ResultPos_enf5_12_miDec ResultPos_enf13_17_miDec ResultPos_enfantTotal_miDec mstat revenu poids poids1;
 #d cr
 
-label data "Enquête CIRANO-Léger sur la prévalence de la COVID-19, 16 mars 2022"
+label data "Enquête CIRANO-Léger sur la prévalence de la COVID-19, 30 mars 2022"
 
-saveold "C:\Users\Alexandre Prud'homme\Dropbox\EnqueteCOVID\Propre\cirano_leger_covid_1.dta", replace version(11)
+saveold "C:\Users\Alexandre Prud'homme\Dropbox\EnqueteCOVID\Propre\cirano_leger_covid_11.dta", replace version(11)
 
-export delimited using "C:\Users\Alexandre Prud'homme\Dropbox\EnqueteCOVID\Propre\cirano-leger-covid_9withlabels.csv"
-export delimited using "C:\Users\Alexandre Prud'homme\Dropbox\EnqueteCOVID\Propre\cirano-leger-covid_9withcodes.csv", nolabel replace
 des 
 
 sum *
