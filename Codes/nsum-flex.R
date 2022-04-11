@@ -15,7 +15,7 @@ print(matrix(regtotlist,length(regtotlist),1))
 rm(df)
 ####
 #QUELLE VAGUE
-#vag <- 10
+
 ## QUELLES RÉGIONS
 SudQc <- c(2,5,9)
 EstNQC <- c(1,3,11,15,17)
@@ -37,50 +37,53 @@ wrap <- function(vag,reglist){
   set.seed(12345) # fixer le seed pour réplications
   
   if (vag==1){
-    nks <- c(25222,127897+43861+9897,531319)
+    nks <- c(25222,127897+43861+9897,532283)
     tests <- 48815
   }
   if (vag==2){
-    nks <- c(25222,127897+43861+9897,516886)
+    nks <- c(25222,127897+43861+9897,517850)
     tests <- 30393
   }
   if (vag==3){
-    nks <- c(25240,181561,506697)
+    nks <- c(25240,181561,507664)
     tests <- 23270
   }
   if (vag==4){
-    nks <- c(25246,181561,499912)
+    nks <- c(25246,181561,500871)
     tests <- 21032
   }
   if (vag==5){
-    nks <- c(25248,181561,495401)
+    nks <- c(25248,181561,496352)
     tests <- 17090
   }
   if (vag==6){
-    nks <- c(25251,181561,493098)
+    nks <- c(25251,181561,494050)
     tests <- 11783
   }
   if (vag==7){
-    nks <- c(25254,181561,491604)
+    nks <- c(25254,181561,492558)
     tests <- 1296*7
   }
   if (vag==8){
-    nks <- c(25251,181561,490506)
+    nks <- c(25251,181561,491460)
     tests <- 7839
   }
   if (vag==9){
-    nks <- c(25251,181561,489452)
+    nks <- c(25251,181561,490405)
     tests <- 7521
   }
   if (vag==10){
-    nks <- c(25248,181561,488718)
+    nks <- c(25248,181561,489671)
     tests <- 8616
   }
   if (vag==11){
-    nks <- c(25241,181561,487907)
+    nks <- c(25241,181561,488869)
     tests <- 1921*7
   }
-  
+  if (vag==12){
+    nks <- c(24984,181561,487961)
+    tests <- 2739*7
+  }
   nks <- c(nks,sum(nks))
   ####
   if (paste(as.character(reglist),collapse="")==paste(regtotlist,collapse="")){
@@ -196,8 +199,11 @@ wrap <- function(vag,reglist){
   tableau <- rbind(tableau,tableau/7)
   rownames(tableau) <- c('Nb cas (7j)','écart-type (7j)','Nb cas (j)','écart-type (j)')
   tableau <- t(tableau)
+  print(round(tableau,digits=0))
+  if (titre=="Québec"){
+    print(xtable(tableau,digits=0),file=paste('Tableaux-Figures/covid-prevalence-vague',vag,"_",'Quebec.tex',sep=""))
+  }
   
-  print(xtable(tableau,digits=0),file=paste('Tableaux-Figures/covid-prevalence-vague',vag,"_",titre,'.tex',sep=""))
   
   fig <- data.frame(
     estimations = c(rownames(tableau),'Officiel (PCR)'),
@@ -208,7 +214,7 @@ wrap <- function(vag,reglist){
   saveRDS(fig,file=paste("Tableaux-Figures/tableauV",vag,"_",titre,".Rda",sep=""))
 }
 
-for (vag in 1:11){
+for (vag in 1:12){
   for (reg in 1:length(reglistuse)){
     wrap(vag,reglistuse[[reg]])
   }

@@ -1,7 +1,7 @@
 # Calculs NSUM - Semaine 1
 library(ggplot2)
 library(foreign)
-
+library(xtable)
 rm(list=ls()) # vider l'espace de travail
 # fixer le répertoire de travail
 setwd("~/Dropbox/EnqueteCOVID/Tableaux-Figures")
@@ -77,10 +77,12 @@ wrap <- function(sreg){
   fig10$vague <- "Semaine 10"
   fig11 <- readRDS(paste("tableauV11_",name,".Rda",sep=""))
   fig11$vague <- "Semaine 11"
+  fig12 <- readRDS(paste("tableauV12_",name,".Rda",sep=""))
+  fig12$vague <- "Semaine 12"
   
-  fig <- rbind(fig1,fig2,fig3,fig4,fig5,fig6,fig7,fig8,fig9,fig10,fig11)
+  fig <- rbind(fig1,fig2,fig3,fig4,fig5,fig6,fig7,fig8,fig9,fig10,fig11,fig12)
   fig$vague <- factor(fig$vague,levels=c("Semaine 1", "Semaine 2","Semaine 3",  "Semaine 4",  "Semaine 5",
-                                         "Semaine 6",  "Semaine 7",  "Semaine 8","Semaine 9", "Semaine 10", "Semaine 11"))
+                                         "Semaine 6",  "Semaine 7",  "Semaine 8","Semaine 9", "Semaine 10", "Semaine 11", "Semaine 12"))
   fig$estimations <- as.character(fig$estimations)
   
   colorBlindGrey8   <- c("#999999", "#E69F00", "#56B4E9", "#009E73", 
@@ -120,6 +122,23 @@ wrap <- function(sreg){
       labs(y="Nombre de cas en milliers (7 derniers jours)", x = "Estimations") + scale_fill_manual(values=safe_colorblind_palette[1:length(unique(fig$vague))]) +
       theme_bw() + theme(axis.text.x = element_text(angle = 90)) + ggtitle(titre) + theme(plot.title = element_text(hjust = 0.5))
     ggsave(paste("incidence-covid-allwaves_",name,".png",sep=""),dpi=1200, width = 16, height = 9)
+    figw <- figclassic
+    figw[figw$estimations=="Officiel (PCR)","se"] <- figw[figw$estimations=="Officiel (PCR)","se"]/figw[figw$estimations=="Officiel (PCR)","cas"][1]
+    figw[figw$estimations=="Officiel (PCR)","cas"] <- figw[figw$estimations=="Officiel (PCR)","cas"]/figw[figw$estimations=="Officiel (PCR)","cas"][1]
+    figw[figw$estimations=='APR, Killworth et al. (1998)',"se"] <- figw[figw$estimations=='APR, Killworth et al. (1998)',"se"]/figw[figw$estimations=='APR, Killworth et al. (1998)',"cas"][1]
+    figw[figw$estimations=='APR, Killworth et al. (1998)',"cas"] <- figw[figw$estimations=='APR, Killworth et al. (1998)',"cas"]/figw[figw$estimations=='APR, Killworth et al. (1998)',"cas"][1]
+    figw[figw$estimations=='APR, CIRANO (2022)',"se"] <- figw[figw$estimations=='APR, CIRANO (2022)',"se"]/figw[figw$estimations=='APR, CIRANO (2022)',"cas"][1]
+    figw[figw$estimations=='APR, CIRANO (2022)',"cas"] <- figw[figw$estimations=='APR, CIRANO (2022)',"cas"]/figw[figw$estimations=='APR, CIRANO (2022)',"cas"][1]
+    figw[figw$estimations=='Direct positifs',"se"] <- figw[figw$estimations=='Direct positifs',"se"]/figw[figw$estimations=='Direct positifs',"cas"][1]
+    figw[figw$estimations=='Direct positifs',"cas"] <- figw[figw$estimations=='Direct positifs',"cas"]/figw[figw$estimations=='Direct positifs',"cas"][1]
+    figw[figw$estimations=='Avec auto-diag.',"se"] <- figw[figw$estimations=='Avec auto-diag.',"se"]/figw[figw$estimations=='Avec auto-diag.',"cas"][1]
+    figw[figw$estimations=='Avec auto-diag.',"cas"] <- figw[figw$estimations=='Avec auto-diag.',"cas"]/figw[figw$estimations=='Avec auto-diag.',"cas"][1]
+    
+    ggplot(figw, aes(x=vague, y=cas,group=estimations,colour=estimations)) +
+      geom_point() + geom_line() + geom_ribbon(aes(ymin=cas-1.96*se, ymax=cas+1.96*se), linetype=2, alpha=0.1) +
+      theme_bw() + theme(axis.text.x = element_text(angle = 90)) + labs(y="Nombre de cas normalisés (Semaine 1=1)", x = "Semaines") +
+      coord_cartesian(ylim = c(0, NA))  + ggtitle(titre) + theme(plot.title = element_text(hjust = 0.5))
+    ggsave(paste("incidence-covid-allwaves-normalized_",name,".png",sep=""),dpi=1200, width = 16, height = 9)
   }
   
   
@@ -148,7 +167,7 @@ wrap <- function(sreg){
   ggplot(figtaux, aes(x=vague, y=100*cas*1e3,group=estimations,colour=estimations)) +
     geom_point() + geom_line() + geom_ribbon(aes(ymin=100*(cas-1.96*se)*1e3, ymax=100*(cas+1.96*se)*1e3), linetype=2, alpha=0.1) +
     theme_bw() + theme(axis.text.x = element_text(angle = 90)) + labs(y="Incidence (taux en %, 7 derniers jours)", x = "Semaines") +
-    coord_cartesian(ylim = c(0, NA)) + ggtitle(titre) + theme(plot.title = element_text(hjust = 0.5))
+    coord_cartesian(ylim = c(0, 10)) + ggtitle(titre) + theme(plot.title = element_text(hjust = 0.5))
   ggsave(paste("incidence-covid-allwaves-lines-taux_",name,".png",sep=""),dpi=1200, width = 16, height = 9)
   
   figdrau <- fig[fig$estimations == "dra_covid",]
@@ -169,7 +188,7 @@ wrap <- function(sreg){
   #   theme_bw() + theme(axis.text.x = element_text(angle = 90)) + labs(y="Nombre de cas en milliers (7 derniers jours)", x = "Vague") + ylim(0,NA)
   # ggsave('incidence-covid-allwaves-lines-testsonly-scaled.png',dpi=1200)
   
-  d <- c("Semaine 9","Semaine 11")
+  d <- c("Semaine 11","Semaine 12")
   
   diff <- as.data.frame(figclassic[figclassic$vague=="Semaine 1","estimations"])
   colnames(diff) <- "estimations"
@@ -185,9 +204,15 @@ wrap <- function(sreg){
   diff_prnt$tstat <- round(diff_prnt$tstat,digits=2)
   diff_prnt$pval <- round(diff_prnt$pval,digits=3)
   print(diff_prnt)
+  
+  if (sreg==1){
+    print(xtable(diff_prnt),file='currentdiff_Quebec.tex')
+  }
+  
+  
 }
 
-for (i in 6:8){
+for (i in 1:8){
   wrap(i)
 }
 
