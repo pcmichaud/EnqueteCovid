@@ -37,52 +37,56 @@ wrap <- function(vag,reglist){
   set.seed(12345) # fixer le seed pour réplications
   
   if (vag==1){
-    nks <- c(25222,127897+43861+9897,532283)
+    nks <- c(25222,127897+43861+9897,532428)
     tests <- 48815
   }
   if (vag==2){
-    nks <- c(25222,127897+43861+9897,517850)
+    nks <- c(25222,127897+43861+9897,517998)
     tests <- 30393
   }
   if (vag==3){
-    nks <- c(25240,181561,507664)
+    nks <- c(25240,181561,507812)
     tests <- 23270
   }
   if (vag==4){
-    nks <- c(25246,181561,500871)
+    nks <- c(25246,181561,501015)
     tests <- 21032
   }
   if (vag==5){
-    nks <- c(25248,181561,496352)
+    nks <- c(25248,181561,496487)
     tests <- 17090
   }
   if (vag==6){
-    nks <- c(25251,181561,494050)
+    nks <- c(25251,181561,494182)
     tests <- 11783
   }
   if (vag==7){
-    nks <- c(25254,181561,492558)
+    nks <- c(25254,181561,492688)
     tests <- 1296*7
   }
   if (vag==8){
-    nks <- c(25251,181561,491460)
+    nks <- c(25251,181561,491590)
     tests <- 7839
   }
   if (vag==9){
-    nks <- c(25251,181561,490405)
+    nks <- c(25251,181561,490545)
     tests <- 7521
   }
   if (vag==10){
-    nks <- c(25248,181561,489671)
+    nks <- c(25248,181561,489814)
     tests <- 8616
   }
   if (vag==11){
-    nks <- c(25241,181561,488869)
+    nks <- c(25241,181561,489012)
     tests <- 1921*7
   }
   if (vag==12){
-    nks <- c(24984,181561,487961)
+    nks <- c(24984,181561,488112)
     tests <- 2739*7
+  }
+  if (vag==13){
+    nks <- c(24716,181561,487159)
+    tests <- 3090*7
   }
   nks <- c(nks,sum(nks))
   ####
@@ -214,7 +218,7 @@ wrap <- function(vag,reglist){
   saveRDS(fig,file=paste("Tableaux-Figures/tableauV",vag,"_",titre,".Rda",sep=""))
 }
 
-for (vag in 1:12){
+for (vag in 1:13){
   for (reg in 1:length(reglistuse)){
     wrap(vag,reglistuse[[reg]])
   }

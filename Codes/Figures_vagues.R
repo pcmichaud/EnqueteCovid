@@ -16,6 +16,9 @@ R1 <- c(2,5,6,9,13,14,4)
 R2 <- c(8,10,12,16)
 R3 <- c(1,3,7,11,15,17)
 
+PCRalter <- c(7059.70,4365.70,3369.13,3038.46,2457.37,1690.83,1297.41,1125.64,1079.02,1248.52,1946.28,2759.62,3090)
+PCRSante <- NULL
+
 wrap <- function(sreg){
   ## choose region
   if (sreg==1){
@@ -79,17 +82,19 @@ wrap <- function(sreg){
   fig11$vague <- "Semaine 11"
   fig12 <- readRDS(paste("tableauV12_",name,".Rda",sep=""))
   fig12$vague <- "Semaine 12"
+  fig13 <- readRDS(paste("tableauV13_",name,".Rda",sep=""))
+  fig13$vague <- "Semaine 13"
   
-  fig <- rbind(fig1,fig2,fig3,fig4,fig5,fig6,fig7,fig8,fig9,fig10,fig11,fig12)
+  fig <- rbind(fig1,fig2,fig3,fig4,fig5,fig6,fig7,fig8,fig9,fig10,fig11,fig12,fig13)
   fig$vague <- factor(fig$vague,levels=c("Semaine 1", "Semaine 2","Semaine 3",  "Semaine 4",  "Semaine 5",
-                                         "Semaine 6",  "Semaine 7",  "Semaine 8","Semaine 9", "Semaine 10", "Semaine 11", "Semaine 12"))
+                                         "Semaine 6",  "Semaine 7",  "Semaine 8","Semaine 9", "Semaine 10", "Semaine 11", "Semaine 12", "Semaine 13"))
   fig$estimations <- as.character(fig$estimations)
   
   colorBlindGrey8   <- c("#999999", "#E69F00", "#56B4E9", "#009E73", 
                          "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
   safe_colorblind_palette <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
                                "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888")
-  
+  safe_colorblind_palette <- c(safe_colorblind_palette,"#FFBD59")
   
   ## Classical graph
   figclassic <- fig[fig$estimations %in% c("total","cirano","covid_test_positif","covid_positif","Officiel (PCR)"),]
@@ -123,7 +128,27 @@ wrap <- function(sreg){
       theme_bw() + theme(axis.text.x = element_text(angle = 90)) + ggtitle(titre) + theme(plot.title = element_text(hjust = 0.5))
     ggsave(paste("incidence-covid-allwaves_",name,".png",sep=""),dpi=1200, width = 16, height = 9)
     figw <- figclassic
-    figw[figw$estimations=="Officiel (PCR)","se"] <- figw[figw$estimations=="Officiel (PCR)","se"]/figw[figw$estimations=="Officiel (PCR)","cas"][1]
+    figw$estimations <- as.character(figw$estimations)
+    
+    for (i in 1:length(levels(figw$vague))){
+      if (length(PCRalter)>0){
+        figw <- rbind(figw,c("PCR (ajustés)",PCRalter[i],0,paste("Semaine ",i,sep="")))
+      }
+      if (length(PCRSante)>0){
+        figw <- rbind(figw,c("PCR (T. Santé)",PCRSante[i],0,paste("Semaine ",i,sep="")))
+      }
+      
+    }
+    figw$estimations <- factor(figw$estimations)
+    figw$cas <- as.numeric(figw$cas)
+    figw$se <- as.numeric(figw$se)
+    if (length(PCRalter)>0){
+      figw[figw$estimations=="PCR (ajustés)","cas"] <- figw[figw$estimations=="PCR (ajustés)","cas"]/figw[figw$estimations=="PCR (ajustés)","cas"][1]
+    }
+    if (length(PCRSante)>0){
+      figw[figw$estimations=="PCR (T. Santé)","cas"] <- figw[figw$estimations=="PCR (T. Santé)","cas"]/figw[figw$estimations=="PCR (T. Santé)","cas"][1]
+    }
+    
     figw[figw$estimations=="Officiel (PCR)","cas"] <- figw[figw$estimations=="Officiel (PCR)","cas"]/figw[figw$estimations=="Officiel (PCR)","cas"][1]
     figw[figw$estimations=='APR, Killworth et al. (1998)',"se"] <- figw[figw$estimations=='APR, Killworth et al. (1998)',"se"]/figw[figw$estimations=='APR, Killworth et al. (1998)',"cas"][1]
     figw[figw$estimations=='APR, Killworth et al. (1998)',"cas"] <- figw[figw$estimations=='APR, Killworth et al. (1998)',"cas"]/figw[figw$estimations=='APR, Killworth et al. (1998)',"cas"][1]
@@ -188,7 +213,7 @@ wrap <- function(sreg){
   #   theme_bw() + theme(axis.text.x = element_text(angle = 90)) + labs(y="Nombre de cas en milliers (7 derniers jours)", x = "Vague") + ylim(0,NA)
   # ggsave('incidence-covid-allwaves-lines-testsonly-scaled.png',dpi=1200)
   
-  d <- c("Semaine 11","Semaine 12")
+  d <- c("Semaine 12","Semaine 13")
   
   diff <- as.data.frame(figclassic[figclassic$vague=="Semaine 1","estimations"])
   colnames(diff) <- "estimations"
