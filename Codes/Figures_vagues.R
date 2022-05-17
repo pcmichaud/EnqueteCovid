@@ -17,7 +17,8 @@ R2 <- c(8,10,12,16)
 R3 <- c(1,3,7,11,15,17)
 
 PCRalter <- NULL #c(7059.70,4365.70,3369.13,3038.46,2457.37,1690.83,1297.41,1125.64,1079.02,1248.52,1946.28,2759.62,3090)
-PCRSante <- NULL
+PCRSante <- c(650, 537, 775, 719, 566, 455, 401, 353, 363, 468, 844, 1169, 1260, 1055, 877, 562,NA)
+semnorm <- 1
 
 wrap <- function(sreg){
   ## choose region
@@ -86,19 +87,24 @@ wrap <- function(sreg){
   fig13$vague <- "Semaine 13"
   fig14 <- readRDS(paste("tableauV14_",name,".Rda",sep=""))
   fig14$vague <- "Semaine 14"
+  fig15 <- readRDS(paste("tableauV15_",name,".Rda",sep=""))
+  fig15$vague <- "Semaine 15"
+  fig16 <- readRDS(paste("tableauV16_",name,".Rda",sep=""))
+  fig16$vague <- "Semaine 16"
+  fig17 <- readRDS(paste("tableauV17_",name,".Rda",sep=""))
+  fig17$vague <- "Semaine 17"
   
-  
-  fig <- rbind(fig1,fig2,fig3,fig4,fig5,fig6,fig7,fig8,fig9,fig10,fig11,fig12,fig13,fig14)
+  fig <- rbind(fig1,fig2,fig3,fig4,fig5,fig6,fig7,fig8,fig9,fig10,fig11,fig12,fig13,fig14,fig15,fig16,fig17)
   fig$vague <- factor(fig$vague,levels=c("Semaine 1", "Semaine 2","Semaine 3",  "Semaine 4",  "Semaine 5",
                                          "Semaine 6",  "Semaine 7",  "Semaine 8","Semaine 9", "Semaine 10", "Semaine 11", "Semaine 12",
-                                         "Semaine 13", "Semaine 14"))
+                                         "Semaine 13", "Semaine 14", "Semaine 15", "Semaine 16", "Semaine 17"))
   fig$estimations <- as.character(fig$estimations)
   
   colorBlindGrey8   <- c("#999999", "#E69F00", "#56B4E9", "#009E73", 
                          "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
   safe_colorblind_palette <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
                                "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888")
-  safe_colorblind_palette <- c(safe_colorblind_palette,"#FFBD59","#4472C4","#172243")
+  safe_colorblind_palette <- c(safe_colorblind_palette,"#FFBD59","#4472C4","#172243","#428A91","#F1CABA")
   
   ## Classical graph
   figclassic <- fig[fig$estimations %in% c("total","cirano","covid_test_positif","covid_positif","Officiel (PCR)"),]
@@ -147,27 +153,39 @@ wrap <- function(sreg){
     figw$cas <- as.numeric(figw$cas)
     figw$se <- as.numeric(figw$se)
     if (length(PCRalter)>0){
-      figw[figw$estimations=="PCR (ajustés)","cas"] <- figw[figw$estimations=="PCR (ajustés)","cas"]/figw[figw$estimations=="PCR (ajustés)","cas"][1]
+      figw[figw$estimations=="PCR (ajustés)","cas"] <- figw[figw$estimations=="PCR (ajustés)","cas"]/figw[figw$estimations=="PCR (ajustés)","cas"][semnorm]
     }
     if (length(PCRSante)>0){
-      figw[figw$estimations=="PCR (T. Santé)","cas"] <- figw[figw$estimations=="PCR (T. Santé)","cas"]/figw[figw$estimations=="PCR (T. Santé)","cas"][1]
+      figw[figw$estimations=="PCR (T. Santé)","cas"] <- figw[figw$estimations=="PCR (T. Santé)","cas"]/figw[figw$estimations=="PCR (T. Santé)","cas"][semnorm]
     }
     
-    figw[figw$estimations=="Officiel (PCR)","cas"] <- figw[figw$estimations=="Officiel (PCR)","cas"]/figw[figw$estimations=="Officiel (PCR)","cas"][1]
-    figw[figw$estimations=='APR, Killworth et al. (1998)',"se"] <- figw[figw$estimations=='APR, Killworth et al. (1998)',"se"]/figw[figw$estimations=='APR, Killworth et al. (1998)',"cas"][1]
-    figw[figw$estimations=='APR, Killworth et al. (1998)',"cas"] <- figw[figw$estimations=='APR, Killworth et al. (1998)',"cas"]/figw[figw$estimations=='APR, Killworth et al. (1998)',"cas"][1]
-    figw[figw$estimations=='APR, CIRANO (2022)',"se"] <- figw[figw$estimations=='APR, CIRANO (2022)',"se"]/figw[figw$estimations=='APR, CIRANO (2022)',"cas"][1]
-    figw[figw$estimations=='APR, CIRANO (2022)',"cas"] <- figw[figw$estimations=='APR, CIRANO (2022)',"cas"]/figw[figw$estimations=='APR, CIRANO (2022)',"cas"][1]
-    figw[figw$estimations=='Direct positifs',"se"] <- figw[figw$estimations=='Direct positifs',"se"]/figw[figw$estimations=='Direct positifs',"cas"][1]
-    figw[figw$estimations=='Direct positifs',"cas"] <- figw[figw$estimations=='Direct positifs',"cas"]/figw[figw$estimations=='Direct positifs',"cas"][1]
-    figw[figw$estimations=='Avec auto-diag.',"se"] <- figw[figw$estimations=='Avec auto-diag.',"se"]/figw[figw$estimations=='Avec auto-diag.',"cas"][1]
-    figw[figw$estimations=='Avec auto-diag.',"cas"] <- figw[figw$estimations=='Avec auto-diag.',"cas"]/figw[figw$estimations=='Avec auto-diag.',"cas"][1]
+    figw[figw$estimations=="Officiel (PCR)","cas"] <- figw[figw$estimations=="Officiel (PCR)","cas"]/figw[figw$estimations=="Officiel (PCR)","cas"][semnorm]
+    figw[figw$estimations=='APR, Killworth et al. (1998)',"se"] <- figw[figw$estimations=='APR, Killworth et al. (1998)',"se"]/figw[figw$estimations=='APR, Killworth et al. (1998)',"cas"][semnorm]
+    figw[figw$estimations=='APR, Killworth et al. (1998)',"cas"] <- figw[figw$estimations=='APR, Killworth et al. (1998)',"cas"]/figw[figw$estimations=='APR, Killworth et al. (1998)',"cas"][semnorm]
+    figw[figw$estimations=='APR, CIRANO (2022)',"se"] <- figw[figw$estimations=='APR, CIRANO (2022)',"se"]/figw[figw$estimations=='APR, CIRANO (2022)',"cas"][semnorm]
+    figw[figw$estimations=='APR, CIRANO (2022)',"cas"] <- figw[figw$estimations=='APR, CIRANO (2022)',"cas"]/figw[figw$estimations=='APR, CIRANO (2022)',"cas"][semnorm]
+    figw[figw$estimations=='Direct positifs',"se"] <- figw[figw$estimations=='Direct positifs',"se"]/figw[figw$estimations=='Direct positifs',"cas"][semnorm]
+    figw[figw$estimations=='Direct positifs',"cas"] <- figw[figw$estimations=='Direct positifs',"cas"]/figw[figw$estimations=='Direct positifs',"cas"][semnorm]
+    figw[figw$estimations=='Avec auto-diag.',"se"] <- figw[figw$estimations=='Avec auto-diag.',"se"]/figw[figw$estimations=='Avec auto-diag.',"cas"][semnorm]
+    figw[figw$estimations=='Avec auto-diag.',"cas"] <- figw[figw$estimations=='Avec auto-diag.',"cas"]/figw[figw$estimations=='Avec auto-diag.',"cas"][semnorm]
     
     ggplot(figw, aes(x=vague, y=cas,group=estimations,colour=estimations)) +
       geom_point() + geom_line() + geom_ribbon(aes(ymin=cas-1.96*se, ymax=cas+1.96*se), linetype=2, alpha=0.1) +
       theme_bw() + theme(axis.text.x = element_text(angle = 90)) + labs(y="Nombre de cas normalisés (Semaine 1=1)", x = "Semaines") +
       coord_cartesian(ylim = c(0, NA))  + ggtitle(titre) + theme(plot.title = element_text(hjust = 0.5))
-    ggsave(paste("incidence-covid-allwaves-normalized_",name,".png",sep=""),dpi=1200, width = 16, height = 9)
+    ggsave(paste("incidence-covid-allwaves-normalized_",semnorm,name,".png",sep=""),dpi=1200, width = 16, height = 9)
+    
+    figsplit <- fig[fig$estimations %in% c("medecins","rpa","sansvaccin"),]
+    figsplit[figsplit$estimations=="medecins","estimations"] <- "Médecins"
+    figsplit[figsplit$estimations=="rpa","estimations"] <- "Résidences pour aînés"
+    figsplit[figsplit$estimations=="sansvaccin","estimations"] <- "Aucune dose Vac."
+    figsplit$estimations <- factor(figsplit$estimations)
+    ggplot(figsplit, aes(x=vague, y=cas,group=estimations,colour=estimations)) +
+     geom_point() + geom_line() + geom_ribbon(aes(ymin=cas-1.96*se, ymax=cas+1.96*se), linetype=2, alpha=0.1) +
+     theme_bw() + theme(axis.text.x = element_text(angle = 90)) + labs(y="Nombre de cas en milliers (7 derniers jours)", x = "Semaines") +
+     coord_cartesian(ylim = c(0, NA))  + ggtitle(titre) + theme(plot.title = element_text(hjust = 0.5))
+    ggsave(paste("incidence-covid-allwaves-splitAPR_",name,".png",sep=""),dpi=1200, width = 16, height = 9)
+
   }
   
   
@@ -192,6 +210,8 @@ wrap <- function(sreg){
   figtaux <- fig[fig$estimations %in% c("covid_test_positif_av","covid_positif_av"),]
   figtaux[figtaux$estimations=="covid_test_positif_av","estimations"] <- 'Direct positifs'
   figtaux[figtaux$estimations=="covid_positif_av","estimations"] <- 'Avec auto-diag.'
+  ograph <- unique(figtaux$estimations)
+  figtaux$estimations <- factor(figtaux$estimations,levels=ograph)
   
   ggplot(figtaux, aes(x=vague, y=100*cas*1e3,group=estimations,colour=estimations)) +
     geom_point() + geom_line() + geom_ribbon(aes(ymin=100*(cas-1.96*se)*1e3, ymax=100*(cas+1.96*se)*1e3), linetype=2, alpha=0.1) +
@@ -205,19 +225,6 @@ wrap <- function(sreg){
     theme_bw() + theme(axis.text.x = element_text(angle = 90)) + labs(y="Connaissances positives à la covid (Moyenne, 7 derniers jours)", x = "Semaines") +
     coord_cartesian(ylim = c(0, NA)) + ggtitle(titre) + theme(plot.title = element_text(hjust = 0.5))
   ggsave(paste("incidence-covid-allwaves-lines-dra-covid_",name,".png",sep=""),dpi=1200, width = 16, height = 9)
-  
-  # fig_alter3 <- fig_alter2
-  # l1 <- fig_alter3[fig_alter3$estimations=="APR, Killworth et al. (1998)" & fig_alter3$vague=="Semaine 1","cas"]/fig_alter3[fig_alter3$estimations=="Direct positifs" & fig_alter3$vague=="Semaine 1","cas"]
-  # l2 <- fig_alter3[fig_alter3$estimations=="APR, Habecker et al. (2015)" & fig_alter3$vague=="Semaine 1","cas"]/fig_alter3[fig_alter3$estimations=="Direct positifs" & fig_alter3$vague=="Semaine 1","cas"]
-  # fig_alter3[fig_alter3$estimations=="APR, Killworth et al. (1998)","cas"] <- fig_alter3[fig_alter3$estimations=="APR, Killworth et al. (1998)","cas"]/l1
-  # fig_alter3[fig_alter3$estimations=="APR, Habecker et al. (2015)","cas"] <- fig_alter3[fig_alter3$estimations=="APR, Habecker et al. (2015)","cas"]/l2
-  # 
-  # ggplot(fig_alter3, aes(x=vague, y=cas,group=estimations,colour=estimations)) +
-  #   geom_point() + geom_line() + geom_ribbon(aes(ymin=cas-1.96*se, ymax=cas+1.96*se), linetype=2, alpha=0.1) +
-  #   theme_bw() + theme(axis.text.x = element_text(angle = 90)) + labs(y="Nombre de cas en milliers (7 derniers jours)", x = "Vague") + ylim(0,NA)
-  # ggsave('incidence-covid-allwaves-lines-testsonly-scaled.png',dpi=1200)
-  
-  d <- c("Semaine 13","Semaine 14")
   
   diff <- as.data.frame(figclassic[figclassic$vague=="Semaine 1","estimations"])
   colnames(diff) <- "estimations"
@@ -236,10 +243,13 @@ wrap <- function(sreg){
   
   if (sreg==1){
     print(xtable(diff_prnt),file='currentdiff_Quebec.tex')
+    print(xtable(diff_prnt),file=paste(paste(d,collapse=""),".tex",sep=""))
   }
   
   
 }
+
+d <- c("Semaine 16","Semaine 17")
 
 for (i in 1:8){
   wrap(i)
