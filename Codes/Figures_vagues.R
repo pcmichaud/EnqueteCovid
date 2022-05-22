@@ -16,9 +16,10 @@ R1 <- c(2,5,6,9,13,14,4)
 R2 <- c(8,10,12,16)
 R3 <- c(1,3,7,11,15,17)
 
+d <- c("Semaine 17","Semaine 18") # comparaisons entre les semaines
 PCRalter <- NULL #c(7059.70,4365.70,3369.13,3038.46,2457.37,1690.83,1297.41,1125.64,1079.02,1248.52,1946.28,2759.62,3090)
-PCRSante <- c(650, 537, 775, 719, 566, 455, 401, 353, 363, 468, 844, 1169, 1260, 1055, 877, 562,NA)
-semnorm <- 1
+PCRSante <- c(650, 537, 775, 719, 566, 455, 401, 353, 363, 468, 844, 1169, 1260, 1055, 877, 562,NA,NA)
+semnorm <- 1 # normaliser quelle semaine pour les comparaisons avec PCR
 
 wrap <- function(sreg){
   ## choose region
@@ -93,18 +94,20 @@ wrap <- function(sreg){
   fig16$vague <- "Semaine 16"
   fig17 <- readRDS(paste("tableauV17_",name,".Rda",sep=""))
   fig17$vague <- "Semaine 17"
+  fig18 <- readRDS(paste("tableauV18_",name,".Rda",sep=""))
+  fig18$vague <- "Semaine 18"
   
-  fig <- rbind(fig1,fig2,fig3,fig4,fig5,fig6,fig7,fig8,fig9,fig10,fig11,fig12,fig13,fig14,fig15,fig16,fig17)
+  fig <- rbind(fig1,fig2,fig3,fig4,fig5,fig6,fig7,fig8,fig9,fig10,fig11,fig12,fig13,fig14,fig15,fig16,fig17,fig18)
   fig$vague <- factor(fig$vague,levels=c("Semaine 1", "Semaine 2","Semaine 3",  "Semaine 4",  "Semaine 5",
                                          "Semaine 6",  "Semaine 7",  "Semaine 8","Semaine 9", "Semaine 10", "Semaine 11", "Semaine 12",
-                                         "Semaine 13", "Semaine 14", "Semaine 15", "Semaine 16", "Semaine 17"))
+                                         "Semaine 13", "Semaine 14", "Semaine 15", "Semaine 16", "Semaine 17", "Semaine 18"))
   fig$estimations <- as.character(fig$estimations)
   
   colorBlindGrey8   <- c("#999999", "#E69F00", "#56B4E9", "#009E73", 
                          "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
   safe_colorblind_palette <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
                                "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888")
-  safe_colorblind_palette <- c(safe_colorblind_palette,"#FFBD59","#4472C4","#172243","#428A91","#F1CABA")
+  safe_colorblind_palette <- c(safe_colorblind_palette,"#FFBD59","#4472C4","#172243","#428A91","#F1CABA","#652051")
   
   ## Classical graph
   figclassic <- fig[fig$estimations %in% c("total","cirano","covid_test_positif","covid_positif","Officiel (PCR)"),]
@@ -248,8 +251,6 @@ wrap <- function(sreg){
   
   
 }
-
-d <- c("Semaine 16","Semaine 17")
 
 for (i in 1:8){
   wrap(i)

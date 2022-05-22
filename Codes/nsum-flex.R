@@ -15,7 +15,7 @@
   rm(df)
   ####
   #QUELLE VAGUE (dernière)
-  dvag <- 17
+  dvag <- 18
   
   ## QUELLES RÉGIONS
   SudQc <- c(2,5,9)
@@ -29,7 +29,7 @@
   
   ##historique nombre de personnes non vaccinées
   #lstnovax <- c(536544, 522123, 511947, 505156, 500638, 498334, 496848, 495749, 494709, 493979, 493179, 492291, 491341, 490361, 489620)
-  lstnovax <- c(552772, 538392, 528240, 521465, 516952, 514653, 513168, 512066, 511027, 510296, 509495, 508605, 507653, 506679, 505725, 504612, 503522)
+  lstnovax <- c(554735, 540381, 530227, 523463, 518950, 516644, 515161, 514057, 513019, 512283, 511481, 510590, 509632, 508661, 507706, 506598, 505508, 504440)
   
   ## valeurs connues
   # medecins actifs: http://www.cmq.org/hub/fr/statistiques.aspx
@@ -109,6 +109,10 @@
       nks <- c( 24821 ,181561,lstnovax[vag])
       tests <- 1106*7
     }
+    if (vag==18){
+      nks <- c( 24827 ,181561,lstnovax[vag])
+      tests <- 801*7
+    }
     nks <- c(nks,sum(nks))
     ####
     if (paste(as.character(reglist),collapse="")==paste(regtotlist,collapse="")){
@@ -138,6 +142,10 @@
     
     # charger les données
     df <- read.dta(paste("~/Dropbox/EnqueteCOVID/Propre/cirano_leger_covid_",vag,".dta",sep=""))
+    if (vag == 18){
+      df$covid_positif <- as.numeric(df$covid_positif=="Oui")
+      df$covid_test_positif <- as.numeric(df$covid_test_positif=="Oui")
+    }
     df <- df[df$semaine==vag,]
     df <- df[!is.na(df$record),]
     df <- df[(df$region %in% reglist),]
